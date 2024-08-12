@@ -7,18 +7,47 @@ const App = () => {
   const [reviewPerson, setReviewPerson] = useState(data)
 
   const previousReview = (id) => {
-    var indexValue = reviewPerson.findIndex(person => person.id === id);
-    let previousIndex = indexValue-1;
-    if (typeof reviewPerson[previousIndex] === 'undefined') {
-       previousIndex = reviewPerson.length-1;
-    }
-    const previous = reviewPerson[previousIndex];
-    setDisplay(previous)
+    /**
+     * using the setDisplay((currentReview) => {}) with modulus 
+     * gives us the current review. So we don't have to pass the id to get the current index.
+     */
+
+    setDisplay((currentReview) => {
+      let previousReviewIndex = ((currentReview.id - 1) - 1 + reviewPerson.length) % reviewPerson.length
+      if (previousReviewIndex < 0) {
+        previousReviewIndex = reviewPerson.length - 1;
+      }
+      return reviewPerson[previousReviewIndex];
+    })
+
+    /**
+     * Without modulus and without using the currentReview in setDisplay()
+     */
+    // var indexValue = reviewPerson.findIndex(person => person.id === id);
+    // let previousIndex = indexValue-1;
+    // if (typeof reviewPerson[previousIndex] === 'undefined') {
+    //    previousIndex = reviewPerson.length-1;
+    // }
+    // var previous = reviewPerson[previousIndex];
+    // setDisplay(previous)
   }
 
   const nextReview = (id) => {
-    const nextIndex = typeof reviewPerson[id] === 'undefined' ? 0 : id++;
+    if (id > reviewPerson.length - 1) {
+      const next = reviewPerson[0];
+      setDisplay(next)
+      return;
+    }
+    /**
+     * With Modulus operator
+     */
+    const nextIndex = (id % reviewPerson.length - 1) + 1
     const next = reviewPerson[nextIndex];
+    /**
+     * Without modules operator
+     */
+    // const nextIndex = typeof reviewPerson[id] === 'undefined' ? 0 : id++;
+    // const next = reviewPerson[nextIndex];
     setDisplay(next)
   }
 
